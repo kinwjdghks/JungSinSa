@@ -1,6 +1,7 @@
 package GUI;
 
-import GUI.JungSinSa_Main.ITEM;
+import others.Database;
+import others.Database.ITEM;
 import others.purchaseException;
 
 import java.awt.EventQueue;
@@ -18,14 +19,12 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.Image;
 
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.text.SimpleAttributeSet;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -37,7 +36,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.border.BevelBorder;
 import javax.swing.JTextPane;
-import java.awt.Component;
 
 public class ItemDescription extends JDialog {
 	
@@ -83,7 +81,7 @@ public class ItemDescription extends JDialog {
 		return new ImageIcon(resizedImg);
 	}
 	
-	public ItemDescription(JFrame parentFrame,ITEM item,String[] ColorOption, String[] SizeOption,int category,int number) { //Need Image URL, SizeOption, ColorOption, Reviews, is_bought
+	public ItemDescription(JFrame parentFrame,Database data,ITEM item,List<String> ColorOption,List<String> SizeOption,int category,int number) { //Need Image URL, SizeOption, ColorOption, Reviews, is_bought
 		super(parentFrame,true);
 		
 		this.parentframe = (JungSinSa_Main) parentFrame;
@@ -104,7 +102,7 @@ public class ItemDescription extends JDialog {
 		lbl_itempic.setBounds(5, 5, 400, 400);
 		lbl_itempic.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_itempic.setPreferredSize(new Dimension(imgWidth,imgHeight));
-		lbl_itempic.setIcon(iconSetSize(parentframe.get_itemPics(category,number),imgWidth,imgHeight));
+		lbl_itempic.setIcon(iconSetSize(parentframe.data.get_itemPics(category,number),imgWidth,imgHeight));
 		mainPanel.add(lbl_itempic);
 		
 		SideBar = new JPanel();
@@ -148,7 +146,7 @@ public class ItemDescription extends JDialog {
 		panel_Color.add(lbl_Color);
 		
 		
-		combo_Color = new JComboBox(ColorOption);
+		combo_Color = new JComboBox(ColorOption.toArray(new String[ColorOption.size()]));
 		panel_Color.add(combo_Color);
 		
 		panel_Size = new JPanel();
@@ -170,14 +168,17 @@ public class ItemDescription extends JDialog {
 		SideBar.add(btnNewButton);
 		btnNewButton.setPreferredSize(new Dimension(100,50));
 		
-		combo_Size = new JComboBox(SizeOption);
+		combo_Size = new JComboBox(SizeOption.toArray(new String[SizeOption.size()]));
 		panel_Size.add(combo_Size);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(combo_Color.getSelectedIndex()==0 ||combo_Size.getSelectedIndex()==0)
 						throw new purchaseException(); //user did not choose either size or color.
+					JOptionPane.showMessageDialog(null,item.getItemName()+"\nSize: "+combo_Size.getSelectedItem().toString()+
+					"\nColor: "+combo_Color.getSelectedItem().toString()+"\nAdded to Cart.","Information",JOptionPane.PLAIN_MESSAGE);
 					
+					data.add_cart(category, number);
 				}
 				catch(purchaseException pe) {
 					JOptionPane.showMessageDialog(null,"You should choose both color and size.","Missing Option",JOptionPane.INFORMATION_MESSAGE);
@@ -191,10 +192,6 @@ public class ItemDescription extends JDialog {
 		mainPanel.add(lbl_sizechart);
 		lbl_sizechart.setIcon(iconSetSize("/ItemImages/topsizechart.jpg",chartWidth,chartHeigth));
 		
-		btnNewButton_1 = new JButton("Write Review");
-		btnNewButton_1.setBounds(0, 0, 150, 30);
-		mainPanel.add(btnNewButton_1);
-		
 		panel_Review = new JPanel();
 		panel_Review.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel_Review.setBounds(5, 900, 585, 250);
@@ -202,7 +199,7 @@ public class ItemDescription extends JDialog {
 		panel_Review.setLayout(null);
 		
 		lblNewLabel = new JLabel("Reviews");
-		lblNewLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		lblNewLabel.setFont(new Font("Heiti TC", Font.BOLD, 19));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(70, 0, 120, 25);
 		panel_Review.add(lblNewLabel);
@@ -217,6 +214,16 @@ public class ItemDescription extends JDialog {
 		scrollPane_1.setOpaque(false);
 		scrollPane_1.setBounds(0, 25, 585, 240);
 		panel_Review.add(scrollPane_1);
+		
+		btnNewButton_1 = new JButton("Write Review");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnNewButton_1.setFont(new Font("Heiti TC", Font.PLAIN, 15));
+		btnNewButton_1.setBounds(400, 1150, 150, 40);
+		mainPanel.add(btnNewButton_1);
 		
 
 	}

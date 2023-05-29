@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import GUI.JungSinSa_Main.ITEM;
 
 public class Database {
 	
@@ -29,7 +28,7 @@ public class Database {
 		return this.ITEMLIST.get(cate).get(num);
 	}
 	
-	private void set_items() {
+	public void set_items() {
 		List<ITEM> list_top = new ArrayList<ITEM>();
 		List<ITEM> list_bottom = new ArrayList<ITEM>();
 		List<ITEM> list_outer = new ArrayList<ITEM>();
@@ -39,11 +38,11 @@ public class Database {
 		list_top.add(new ITEM("Blue Oxford Shirt",30000));
 		list_top.add(new ITEM("Grey Sport Hoody",29000));
 		list_top.add(new ITEM("Denim Short Shirt",37000));
-		list_top.add(new ITEM("Grey Summer Cargo Pants",32000));
-		list_top.add(new ITEM("LightBlue Jeans",39000));
-		list_top.add(new ITEM("Melange Training Half Pants",30000));
-		list_top.add(new ITEM("White Denim Pants",29000));
-		list_top.add(new ITEM("Wide Bending Beige Pants",48000));
+		list_bottom.add(new ITEM("Grey Summer Cargo Pants",36000));
+		list_bottom.add(new ITEM("LightBlue Jeans",39000));
+		list_bottom.add(new ITEM("Melange Training Half Pants",26000));
+		list_bottom.add(new ITEM("White Denim Pants",29000));
+		list_bottom.add(new ITEM("Wide Bending Beige Pants",48000));
 		ITEMLIST.add(list_top);
 		ITEMLIST.add(list_bottom);
 	}
@@ -59,13 +58,69 @@ public class Database {
 	}
 	
 	//Options data
-	private	String[] ColorOption1 = {"Choose Color","Black","White","Blue","Yellow"};
-	private	String[] ColorOption2 = {"Choose Color","Black","White"};
-	private	String[] SizeOption1 = {"Choose Size","L","M","S"};
-	private	String[] SizeOption2 = {"Choose Size","XL","L","M","S","XS"};
-	private	String[] SizeOption3 = {"Choose Size","freesize"};
+	private List<List<String>> sizeOption = new ArrayList<>();
+		
+		public void set_sizeOption() {
+			sizeOption.add(Arrays.asList("Choose Color","Black","White","Blue","Yellow"));
+			sizeOption.add(Arrays.asList("Choose Color","Black","White"));
+		}
+		public List<String> get_sizeOption(int num) {
+			return this.sizeOption.get(num);
+		}
+	private List<List<String>> colorOption = new ArrayList<>();
+		
+		public void set_colorOption() {
+			colorOption.add(Arrays.asList("Choose Size","L","M","S"));
+			colorOption.add(Arrays.asList("Choose Size","XL","L","M","S","XS"));
+			colorOption.add(Arrays.asList("Choose Size","freesize"));
+		}
+		public List<String> get_colorOption(int num) {
+			return this.colorOption.get(num);
+		}
+	private int[] itemAmount = {5,5,0,0}; //item amount at each categories
+	public int get_itemAmount(int cate) {
+		return this.itemAmount[cate];
+	}
+	private boolean[][] cart = new boolean[4][]; //items in the cart
+	private void set_cart() {
+		for(int i=0;i<4;i++) {
+			cart[i] = new boolean[this.itemAmount[i]];
+		}
+		
+	}
+	public void add_cart(int cate,int idx) {
+		this.cart[cate][idx] = true;
+	}
+	public boolean is_cart(int cate,int idx) {
+		return this.cart[cate][idx];
+	}
+	private boolean[][] is_bought = new boolean[4][]; //items user has already bought
 	
-	
+	public void set_is_bought() {
+		for(int i=0;i<4;i++) {
+			is_bought[i] = new boolean[itemAmount[i]];
+		}
+	}
+	public boolean get_is_bought(int cate,int idx) {
+		return this.is_bought[cate][idx];
+	}
+	public void purchase_complete() {
+		//renew is_bought array & empty cart
+		for(int i=0;i<4;i++) {
+			for(int j=0;j<get_itemAmount(i);j++) {
+				this.is_bought[i][j] = this.cart[i][j];
+				cart[i][j] = false;
+			}
+		}
+	}
+	public Database() {
+		set_itemPics();
+		set_items();
+		set_sizeOption();
+		set_colorOption();
+		set_cart();
+		set_is_bought();
+	}
 	
 	
 	

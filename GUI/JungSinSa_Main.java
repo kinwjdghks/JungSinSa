@@ -1,4 +1,5 @@
 package GUI;
+import others.Database;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -30,59 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class JungSinSa_Main extends JFrame {
-	
-	public class ITEM{
-		private String name;
-		private int price;
-		
-		public ITEM(String name,int price) {
-			this.name = name;
-			this.price = price;
-		}
-		public String getItemName() {
-			return name;
-		}
-		public int getItemPrice() {
-			return price;
-		}
-	};
-	
-	private List<List<ITEM>> ITEMLIST = new ArrayList<>(); //one list of entire items. 
-	public ITEM get_ITEM(int cate,int num) {
-		return this.ITEMLIST.get(cate).get(num);
-	}
-	
-	private void set_items() {
-		List<ITEM> list_top = new ArrayList<ITEM>();
-		List<ITEM> list_bottom = new ArrayList<ITEM>();
-		List<ITEM> list_outer = new ArrayList<ITEM>();
-		List<ITEM> list_shoes = new ArrayList<ITEM>();
-		list_top.add(new ITEM("Checked Long Shirts",32000));
-		list_top.add(new ITEM("C Logo SweatShirt",25000));
-		list_top.add(new ITEM("Blue Oxford Shirt",30000));
-		list_top.add(new ITEM("Grey Sport Hoody",29000));
-		list_top.add(new ITEM("Denim Short Shirt",37000));
-		list_bottom.add(new ITEM("Grey Summer Cargo Pants",32000));
-		list_bottom.add(new ITEM("LightBlue Jeans",39000));
-		list_bottom.add(new ITEM("Melange Training Half Pants",30000));
-		list_bottom.add(new ITEM("White Denim Pants",29000));
-		list_bottom.add(new ITEM("Wide Bending Beige Pants",48000));
-		ITEMLIST.add(list_top);
-		ITEMLIST.add(list_bottom);
-	}
-	//picture data
-	private List<List<String>> itemPics = new ArrayList<>();
-	public String get_itemPics(int cate,int num) {
-		return this.itemPics.get(cate).get(num);
-	}
-	
-	//Options
-	private	String[] ColorOption1 = {"Choose Color","Black","White","Blue","Yellow"};
-	private	String[] ColorOption2 = {"Choose Color","Black","White"};
-	private	String[] SizeOption1 = {"Choose Size","L","M","S"};
-	private	String[] SizeOption2 = {"Choose Size","XL","L","M","S","XS"};
-	private	String[] SizeOption3 = {"Choose Size","freesize"};
-	
+	Database data;
 	//frame size values
 	private int itemSlotWidth = 250;
 	private int itemSlotHeight = 275;
@@ -141,9 +90,6 @@ public class JungSinSa_Main extends JFrame {
 	private JLabel lblBottomItem_5;
 	
 	
-	private int[] itemAmount = {5,0,0,0}; //item amount at each categories
-	private boolean[][] cart = new boolean[4][]; //items in the cart
-	private boolean[][] is_bought = new boolean[4][]; //items user has already bought
 	
 	
 	
@@ -172,33 +118,14 @@ public class JungSinSa_Main extends JFrame {
 			}
 		});
 	}
-	private void purchase_complete() {
-		//renew is_bought array & empty cart
-		for(int i=0;i<4;i++) {
-			for(int j=0;j<itemAmount[i];j++) {
-				is_bought[i][j] = cart[i][j];
-				cart[i][j] = false;
-			}
-		}
-		
-		return;
-	}
+	
 	/**
 	 * Create the frame.
 	 */
 	public JungSinSa_Main() {
+		data = new Database();
+		//get all the datas.
 		
-		
-		
-		itemPics.add(Arrays.asList("/ItemImages/top_1.jpg","/ItemImages/top_2.jpg","/ItemImages/top_3.jpg","/ItemImages/top_4.jpg","/ItemImages/top_5.jpg"));
-		itemPics.add(Arrays.asList("/ItemImages/bottom_1.jpg","/ItemImages/bottom_2.jpg","/ItemImages/bottom_3.jpg","/ItemImages/bottom_4.jpg","/ItemImages/bottom_5.jpg"));
-		for(int i=0;i<4;i++) { //initialize cart boolean array, which has different size of columns for each row.
-			cart[i] = new boolean[itemAmount[i]]; //every entries automatically initialized to false.
-		}
-		for(int i=0;i<4;i++) { //initialize is_bought boolean array.
-			is_bought[i] = new boolean[itemAmount[i]]; 
-		}
-		set_items(); //initialize items
 		
 		setResizable(false);
 		setTitle("JungSinSa");
@@ -269,7 +196,7 @@ public class JungSinSa_Main extends JFrame {
 		topItem_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,get_ITEM(0,0),ColorOption2,SizeOption1,0,0);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,0),data.get_colorOption(0),data.get_sizeOption(0),0,0);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -282,9 +209,9 @@ public class JungSinSa_Main extends JFrame {
 		
 		
 		
-		imgTopItem_1.setIcon(iconSetSize(get_itemPics(0,0),itemSlotWidth,itemSlotHeight));
+		imgTopItem_1.setIcon(iconSetSize(data.get_itemPics(0,0),itemSlotWidth,itemSlotHeight));
 		topItem_1.add(imgTopItem_1, BorderLayout.CENTER);
-		lblTopItem_1 = new JLabel(get_ITEM(0,0).getItemName());
+		lblTopItem_1 = new JLabel(data.get_ITEM(0,0).getItemName());
 		lblTopItem_1.setHorizontalAlignment(SwingConstants.CENTER);
 		topItem_1.add(lblTopItem_1, BorderLayout.SOUTH);
 		
@@ -303,9 +230,9 @@ public class JungSinSa_Main extends JFrame {
 		topItem_2.setLayout(new BorderLayout(5, 5));
 		
 		imgTopItem_2 = new JLabel("");
-		imgTopItem_2.setIcon(iconSetSize(get_itemPics(0,1),itemSlotWidth,itemSlotHeight));
+		imgTopItem_2.setIcon(iconSetSize(data.get_itemPics(0,1),itemSlotWidth,itemSlotHeight));
 		topItem_2.add(imgTopItem_2, BorderLayout.CENTER);
-		lblTopItem_2 = new JLabel(get_ITEM(0,1).getItemName());
+		lblTopItem_2 = new JLabel(data.get_ITEM(0,1).getItemName());
 		lblTopItem_2.setHorizontalAlignment(SwingConstants.CENTER);
 		topItem_2.add(lblTopItem_2, BorderLayout.SOUTH);
 		
@@ -324,9 +251,9 @@ public class JungSinSa_Main extends JFrame {
 		topItem_3.setLayout(new BorderLayout(5, 5));
 		
 		imgTopItem_3 = new JLabel("");
-		imgTopItem_3.setIcon(iconSetSize(get_itemPics(0,2),itemSlotWidth,itemSlotHeight));
+		imgTopItem_3.setIcon(iconSetSize(data.get_itemPics(0,2),itemSlotWidth,itemSlotHeight));
 		topItem_3.add(imgTopItem_3, BorderLayout.CENTER);
-		lblTopItem_3 = new JLabel(get_ITEM(0,2).getItemName());
+		lblTopItem_3 = new JLabel(data.get_ITEM(0,2).getItemName());
 		lblTopItem_3.setHorizontalAlignment(SwingConstants.CENTER);
 		topItem_3.add(lblTopItem_3, BorderLayout.SOUTH);
 		
@@ -345,9 +272,9 @@ public class JungSinSa_Main extends JFrame {
 		topItem_4.setLayout(new BorderLayout(5, 5));
 		
 		imgTopItem_4 = new JLabel("");
-		imgTopItem_4.setIcon(iconSetSize(get_itemPics(0,3),itemSlotWidth,itemSlotHeight));
+		imgTopItem_4.setIcon(iconSetSize(data.get_itemPics(0,3),itemSlotWidth,itemSlotHeight));
 		topItem_4.add(imgTopItem_4, BorderLayout.CENTER);
-		lblTopItem_4 = new JLabel(get_ITEM(0,3).getItemName());
+		lblTopItem_4 = new JLabel(data.get_ITEM(0,3).getItemName());
 		lblTopItem_4.setHorizontalAlignment(SwingConstants.CENTER);
 		topItem_4.add(lblTopItem_4, BorderLayout.SOUTH);
 		
@@ -366,9 +293,9 @@ public class JungSinSa_Main extends JFrame {
 		topItem_5.setLayout(new BorderLayout(5, 5));
 		
 		imgTopItem_5 = new JLabel("");
-		imgTopItem_5.setIcon(iconSetSize(get_itemPics(0,4),itemSlotWidth,itemSlotHeight));
+		imgTopItem_5.setIcon(iconSetSize(data.get_itemPics(0,4),itemSlotWidth,itemSlotHeight));
 		topItem_5.add(imgTopItem_5, BorderLayout.CENTER);
-		lblTopItem_5 = new JLabel(get_ITEM(0,4).getItemName());
+		lblTopItem_5 = new JLabel(data.get_ITEM(0,4).getItemName());
 		lblTopItem_5.setHorizontalAlignment(SwingConstants.CENTER);
 		topItem_5.add(lblTopItem_5, BorderLayout.SOUTH);
 		
@@ -400,7 +327,7 @@ public class JungSinSa_Main extends JFrame {
 		bottomItem_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,get_ITEM(1, 0),ColorOption2,SizeOption1,1,0);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(1, 0),data.get_colorOption(0),data.get_sizeOption(1),1,0);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -413,9 +340,9 @@ public class JungSinSa_Main extends JFrame {
 		
 		
 		
-		imgBottomItem_1.setIcon(iconSetSize(get_itemPics(1,0),itemSlotWidth,itemSlotHeight));
+		imgBottomItem_1.setIcon(iconSetSize(data.get_itemPics(1,0),itemSlotWidth,itemSlotHeight));
 		bottomItem_1.add(imgBottomItem_1, BorderLayout.CENTER);
-		lblBottomItem_1 = new JLabel(get_ITEM(1,0).getItemName());
+		lblBottomItem_1 = new JLabel(data.get_ITEM(1,0).getItemName());
 		lblBottomItem_1.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_1.add(lblBottomItem_1, BorderLayout.SOUTH);
 		
@@ -434,9 +361,9 @@ public class JungSinSa_Main extends JFrame {
 		bottomItem_2.setLayout(new BorderLayout(5, 5));
 		
 		imgBottomItem_2 = new JLabel("");
-		imgBottomItem_2.setIcon(iconSetSize(get_itemPics(1,1),itemSlotWidth,itemSlotHeight));
+		imgBottomItem_2.setIcon(iconSetSize(data.get_itemPics(1,1),itemSlotWidth,itemSlotHeight));
 		bottomItem_2.add(imgBottomItem_2, BorderLayout.CENTER);
-		lblBottomItem_2 = new JLabel(get_ITEM(1,1).getItemName());
+		lblBottomItem_2 = new JLabel(data.get_ITEM(1,1).getItemName());
 		lblBottomItem_2.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_2.add(lblBottomItem_2, BorderLayout.SOUTH);
 		
@@ -455,9 +382,9 @@ public class JungSinSa_Main extends JFrame {
 		bottomItem_3.setLayout(new BorderLayout(5, 5));
 		
 		imgBottomItem_3 = new JLabel("");
-		imgBottomItem_3.setIcon(iconSetSize(get_itemPics(1,2),itemSlotWidth,itemSlotHeight));
+		imgBottomItem_3.setIcon(iconSetSize(data.get_itemPics(1,2),itemSlotWidth,itemSlotHeight));
 		bottomItem_3.add(imgBottomItem_3, BorderLayout.CENTER);
-		lblBottomItem_3 = new JLabel(get_ITEM(1,2).getItemName());
+		lblBottomItem_3 = new JLabel(data.get_ITEM(1,2).getItemName());
 		lblBottomItem_3.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_3.add(lblBottomItem_3, BorderLayout.SOUTH);
 		
@@ -476,9 +403,9 @@ public class JungSinSa_Main extends JFrame {
 		bottomItem_4.setLayout(new BorderLayout(5, 5));
 		
 		imgBottomItem_4 = new JLabel("");
-		imgBottomItem_4.setIcon(iconSetSize(get_itemPics(1,3),itemSlotWidth,itemSlotHeight));
+		imgBottomItem_4.setIcon(iconSetSize(data.get_itemPics(1,3),itemSlotWidth,itemSlotHeight));
 		bottomItem_4.add(imgBottomItem_4, BorderLayout.CENTER);
-		lblBottomItem_4 = new JLabel(get_ITEM(1,3).getItemName());
+		lblBottomItem_4 = new JLabel(data.get_ITEM(1,3).getItemName());
 		lblBottomItem_4.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_4.add(lblBottomItem_4, BorderLayout.SOUTH);
 		
@@ -497,9 +424,9 @@ public class JungSinSa_Main extends JFrame {
 		bottomItem_5.setLayout(new BorderLayout(5, 5));
 		
 		imgBottomItem_5 = new JLabel("");
-		imgBottomItem_5.setIcon(iconSetSize(get_itemPics(1,4),itemSlotWidth,itemSlotHeight));
+		imgBottomItem_5.setIcon(iconSetSize(data.get_itemPics(1,4),itemSlotWidth,itemSlotHeight));
 		bottomItem_5.add(imgBottomItem_5, BorderLayout.CENTER);
-		lblBottomItem_5 = new JLabel(get_ITEM(1,4).getItemName());
+		lblBottomItem_5 = new JLabel(data.get_ITEM(1,4).getItemName());
 		lblBottomItem_5.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_5.add(lblBottomItem_5, BorderLayout.SOUTH);
 		
