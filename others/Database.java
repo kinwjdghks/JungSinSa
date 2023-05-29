@@ -82,14 +82,23 @@ public class Database {
 		return this.itemAmount[cate];
 	}
 	private boolean[][] cart = new boolean[4][]; //items in the cart
+	private int cart_num;
+	public int get_cartnum() {
+		return cart_num;
+	}
 	private void set_cart() {
 		for(int i=0;i<4;i++) {
 			cart[i] = new boolean[this.itemAmount[i]];
 		}
-		
+		cart_num = 0;
 	}
 	public void add_cart(int cate,int idx) {
 		this.cart[cate][idx] = true;
+		cart_num++;
+	}
+	public void remove_cart(int cate,int idx) {
+		this.cart[cate][idx] = false;
+		cart_num--;
 	}
 	public boolean is_cart(int cate,int idx) {
 		return this.cart[cate][idx];

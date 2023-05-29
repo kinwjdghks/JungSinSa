@@ -49,7 +49,7 @@ public class ItemDescription extends JDialog {
 	private JLabel lbl_itempic;
 	private JPanel panel_Color;
 	private JPanel panel_Size;
-	private JButton btnNewButton;
+	private JButton btn_addcart;
 	private JLabel lbl_Color;
 	private JLabel lbl_Size;
 	private JComboBox combo_Color;
@@ -163,22 +163,37 @@ public class ItemDescription extends JDialog {
 		lbl_price.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_price.setPreferredSize(new Dimension(150,40));
 		SideBar.add(lbl_price);
+		if(data.is_cart(category, number) == false) {
+			btn_addcart = new JButton("Add to Cart");
+			btn_addcart.setPreferredSize(new Dimension(100,50));
+		}
+		else {
+			btn_addcart = new JButton("Remove from Cart");
+			btn_addcart.setPreferredSize(new Dimension(140,50));
+		}
+		SideBar.add(btn_addcart);
 		
-		btnNewButton = new JButton("Add to Cart");
-		SideBar.add(btnNewButton);
-		btnNewButton.setPreferredSize(new Dimension(100,50));
 		
 		combo_Size = new JComboBox(SizeOption.toArray(new String[SizeOption.size()]));
 		panel_Size.add(combo_Size);
-		btnNewButton.addActionListener(new ActionListener() {
+		btn_addcart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(combo_Color.getSelectedIndex()==0 ||combo_Size.getSelectedIndex()==0)
+					if(data.is_cart(category, number)==true) {
+						JOptionPane.showMessageDialog(null,"Removed from Cart.","Information",JOptionPane.PLAIN_MESSAGE);
+						data.remove_cart(category, number);
+						btn_addcart.setText("Add to Cart");
+						btn_addcart.setPreferredSize(new Dimension(100,50));
+					}
+					else if(combo_Color.getSelectedIndex()==0 ||combo_Size.getSelectedIndex()==0)
 						throw new purchaseException(); //user did not choose either size or color.
-					JOptionPane.showMessageDialog(null,item.getItemName()+"\nSize: "+combo_Size.getSelectedItem().toString()+
-					"\nColor: "+combo_Color.getSelectedItem().toString()+"\nAdded to Cart.","Information",JOptionPane.PLAIN_MESSAGE);
-					
-					data.add_cart(category, number);
+					else {
+						JOptionPane.showMessageDialog(null,item.getItemName()+"\nSize: "+combo_Size.getSelectedItem().toString()+
+								"\nColor: "+combo_Color.getSelectedItem().toString()+"\nAdded to Cart.","Information",JOptionPane.PLAIN_MESSAGE);
+						data.add_cart(category, number);
+						btn_addcart.setText("Remove from Cart");
+						btn_addcart.setPreferredSize(new Dimension(140,50));
+					}
 				}
 				catch(purchaseException pe) {
 					JOptionPane.showMessageDialog(null,"You should choose both color and size.","Missing Option",JOptionPane.INFORMATION_MESSAGE);

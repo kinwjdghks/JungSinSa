@@ -156,9 +156,8 @@ public class JungSinSa_Main extends JFrame {
 		ViewMyCart.setPreferredSize(new Dimension(80,50));
 		ViewMyCart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MyCart dialog = new MyCart(JungSinSa_Main.this);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
+				MyCart frame = new MyCart(JungSinSa_Main.this,data);
+				frame.setVisible(true);
 			}
 		});
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 20, 5));
@@ -220,9 +219,9 @@ public class JungSinSa_Main extends JFrame {
 		topItem_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				TopItem_1 dialog = new TopItem_1(JungSinSa_Main.this,ITEMLIST.get(0).get(1),"/ItemImages/top_2.jpg",ColorOption2,SizeOption2);
-//				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//				dialog.setVisible(true);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,1),data.get_colorOption(0),data.get_sizeOption(0),0,1);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
 			}
 		});
 		topItem_2.setPreferredSize(new Dimension(itemSlotWidth,itemSlotHeight));
