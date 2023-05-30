@@ -81,7 +81,7 @@ public class ItemDescription extends JDialog {
 		return new ImageIcon(resizedImg);
 	}
 	
-	public ItemDescription(JFrame parentFrame,Database data,ITEM item,List<String> ColorOption,List<String> SizeOption,int category,int number) { //Need Image URL, SizeOption, ColorOption, Reviews, is_bought
+	public ItemDescription(JFrame parentFrame,Database data,ITEM item,int sizeOption,int colorOption,int category,int number) { //Need Image URL, SizeOption, ColorOption, Reviews, is_bought
 		super(parentFrame,true);
 		
 		this.parentframe = (JungSinSa_Main) parentFrame;
@@ -146,7 +146,7 @@ public class ItemDescription extends JDialog {
 		panel_Color.add(lbl_Color);
 		
 		
-		combo_Color = new JComboBox(ColorOption.toArray(new String[ColorOption.size()]));
+		combo_Color = new JComboBox(data.get_colorOption(colorOption).toArray(new String[data.get_colorOption(colorOption).size()]));
 		panel_Color.add(combo_Color);
 		
 		panel_Size = new JPanel();
@@ -163,7 +163,7 @@ public class ItemDescription extends JDialog {
 		lbl_price.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_price.setPreferredSize(new Dimension(150,40));
 		SideBar.add(lbl_price);
-		if(data.is_cart(category, number) == false) {
+		if(data.is_cart(category, number) == 0) {
 			btn_addcart = new JButton("Add to Cart");
 			btn_addcart.setPreferredSize(new Dimension(100,50));
 		}
@@ -174,12 +174,12 @@ public class ItemDescription extends JDialog {
 		SideBar.add(btn_addcart);
 		
 		
-		combo_Size = new JComboBox(SizeOption.toArray(new String[SizeOption.size()]));
+		combo_Size = new JComboBox(data.get_sizeOption(sizeOption).toArray(new String[data.get_sizeOption(sizeOption).size()]));
 		panel_Size.add(combo_Size);
 		btn_addcart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(data.is_cart(category, number)==true) {
+					if(data.is_cart(category, number) == 1) {
 						JOptionPane.showMessageDialog(null,"Removed from Cart.","Information",JOptionPane.PLAIN_MESSAGE);
 						data.remove_cart(category, number);
 						btn_addcart.setText("Add to Cart");
@@ -190,7 +190,7 @@ public class ItemDescription extends JDialog {
 					else {
 						JOptionPane.showMessageDialog(null,item.getItemName()+"\nSize: "+combo_Size.getSelectedItem().toString()+
 								"\nColor: "+combo_Color.getSelectedItem().toString()+"\nAdded to Cart.","Information",JOptionPane.PLAIN_MESSAGE);
-						data.add_cart(category, number);
+						data.add_cart(category, number,sizeOption,combo_Size.getSelectedIndex(),colorOption,combo_Color.getSelectedIndex());
 						btn_addcart.setText("Remove from Cart");
 						btn_addcart.setPreferredSize(new Dimension(140,50));
 					}

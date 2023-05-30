@@ -17,6 +17,8 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.FlowLayout;
 import java.awt.Font;
 
@@ -25,6 +27,8 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class MyCart extends JFrame {
@@ -35,64 +39,17 @@ public class MyCart extends JFrame {
 	private JButton btn_close;
 	private JScrollPane scrollPane;
 	private JPanel panel_main;
-	
-	private class createDynamicList implements Runnable{
-		private ImageIcon iconSetSize(String URL,int width,int height) { //return size adjusted ImageIcon.
-			ImageIcon origin = new ImageIcon(JungSinSa_Main.class.getResource(URL));
-			Image resizedImg = origin.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-			return new ImageIcon(resizedImg);
-		}
-		private Database data;
-		public createDynamicList(Database data,JPanel panel) {
-			this.data = data;
-		}
-		@Override
-		public void run() {
-			int i,j;
-			if(data.get_cartnum()==0) {
-				JLabel lbl_empty = new JLabel("There are no items in your cart.");
-				lbl_empty.setFont(new Font("Heiti TC", Font.BOLD, 20));
-				panel_main.add(lbl_empty);
-			}
-			for(i=0;i<4;i++) {
-				for(j=0;j<data.get_itemAmount(i);j++) {
-					if(data.is_cart(i, j)==true) {
-						
-						JPanel itembox = new JPanel();
-						itembox.setPreferredSize(new Dimension(380,120));
-						panel_main.add(itembox);
-						itembox.setLayout(null);
-						
-						JLabel lbl_itemPic = new JLabel("");
-						lbl_itemPic.setBounds(6, 6, 110, 108);
-						lbl_itemPic.setIcon(iconSetSize(data.get_itemPics(i, j), 110, 108));
-						itembox.add(lbl_itemPic);
-						
-						JLabel lbl_itemName = new JLabel(data.get_ITEM(i, j).getItemName());
-						lbl_itemName.setBounds(122, 6, 252, 40);
-						itembox.add(lbl_itemName);
-						
-						JLabel lbl_itemSize = new JLabel("XS"); //미
-						lbl_itemSize.setBounds(122, 74, 110, 40);
-						itembox.add(lbl_itemSize);
-						
-						JLabel lbl_itemCost = new JLabel(Integer.toString(data.get_ITEM(i, j).getItemPrice())+"won");
-						lbl_itemCost.setBounds(247, 74, 120, 40);
-						itembox.add(lbl_itemCost);
-						
-						
-					}
-				}
-			}
-
-		}
+	private ImageIcon iconSetSize(String URL,int width,int height) { //return size adjusted ImageIcon.
+		ImageIcon origin = new ImageIcon(JungSinSa_Main.class.getResource(URL));
+		Image resizedImg = origin.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(resizedImg);
 	}
 	
 	/**
 	 * Create the frame.
 	 */	
 	public MyCart(JFrame parentFrame,Database data) {
-		
+	
 		
 		setTitle("My Cart");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -135,11 +92,48 @@ public class MyCart extends JFrame {
 		scrollPane.setBounds(0, 0, 400, frameheight-78);
 		contentPane.add(scrollPane);
 		
-		createDynamicList create = new createDynamicList(data,panel_main);
-		
-		
-		create.run();
-		
+		if(data.get_cartnum()==0) {
+			JLabel lbl_empty = new JLabel("There are no items in your cart.");
+			lbl_empty.setFont(new Font("Heiti TC", Font.BOLD, 20));
+			panel_main.add(lbl_empty);
+		}
+		for(int i=0;i<4;i++) {
+			for(int j=0;j<data.get_itemAmount(i);j++) {
+				if(data.is_cart(i, j) == 1) {
+					
+					JPanel itembox = new JPanel();
+					itembox.setPreferredSize(new Dimension(380,120));
+					panel_main.add(itembox);
+					itembox.setLayout(null);
+					
+					JLabel lbl_itemPic = new JLabel("");
+					lbl_itemPic.setBounds(6, 6, 110, 108);
+					lbl_itemPic.setIcon(iconSetSize(data.get_itemPics(i, j), 110, 108));
+					itembox.add(lbl_itemPic);
+					
+					JLabel lbl_itemName = new JLabel(data.get_ITEM(i, j).getItemName());
+					lbl_itemName.setBounds(122, 6, 252, 40);
+					itembox.add(lbl_itemName);
+					
+					
+					JLabel lbl_itemSize = new JLabel(data.get_sizeOption(data.get_cartlist(i, j)[1]).get(data.get_cartlist(i, j)[2])); 
+					lbl_itemSize.setBounds(122, 74, 60, 40);
+					itembox.add(lbl_itemSize);
+					
+					System.out.print(data.get_sizeOption(data.get_cartlist(i, j)[1]));
+					JLabel lbl_itemColor = new JLabel(data.get_colorOption(data.get_cartlist(i, j)[3]).get(data.get_cartlist(i, j)[4])); 
+					lbl_itemColor.setBounds(182, 74, 60, 40);
+					itembox.add(lbl_itemColor);
+					
+					JLabel lbl_itemCost = new JLabel(Integer.toString(data.get_ITEM(i, j).getItemPrice())+"won");
+					lbl_itemCost.setBounds(247, 74, 120, 40);
+					itembox.add(lbl_itemCost);
+					
+					
+					
+				}
+			}
+		}
 		
 	}
 }

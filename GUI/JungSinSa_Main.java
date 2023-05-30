@@ -123,6 +123,7 @@ public class JungSinSa_Main extends JFrame {
 	 * Create the frame.
 	 */
 	public JungSinSa_Main() {
+		int i;
 		data = new Database();
 		//get all the datas.
 		
@@ -195,7 +196,7 @@ public class JungSinSa_Main extends JFrame {
 		topItem_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,0),data.get_colorOption(0),data.get_sizeOption(0),0,0);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,0),0,0,0,0);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -219,7 +220,7 @@ public class JungSinSa_Main extends JFrame {
 		topItem_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,1),data.get_colorOption(0),data.get_sizeOption(0),0,1);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(0,1),0,0,0,1);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -319,14 +320,16 @@ public class JungSinSa_Main extends JFrame {
 		flowLayout_1.setHgap(15);
 		panel_bottom.setPreferredSize(new Dimension(categoryWidth,categoryHeight));
 		scrollPane_2 = new JScrollPane(panel_bottom);
-		
+		scrollPane_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollPane_2.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
+		panel.add(scrollPane_2);
 		
 		//category-Bottom/item1
 		bottomItem_1 = new JPanel();
 		bottomItem_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(1, 0),data.get_colorOption(0),data.get_sizeOption(1),1,0);
+				ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(1, 0),0,0,1,0);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -428,22 +431,50 @@ public class JungSinSa_Main extends JFrame {
 		lblBottomItem_5 = new JLabel(data.get_ITEM(1,4).getItemName());
 		lblBottomItem_5.setHorizontalAlignment(SwingConstants.CENTER);
 		bottomItem_5.add(lblBottomItem_5, BorderLayout.SOUTH);
-		
-		scrollPane_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		scrollPane_2.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
-		panel.add(scrollPane_2);
 		//
+		
 		lbl_Outer = new JLabel("Outer");
 		lbl_Outer.setPreferredSize(new Dimension(this.getWidth(),30));
 		lbl_Outer.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 		panel.add(lbl_Outer);
+		
 		//category 3
 		panel_outer = new JPanel();
-		panel_outer.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
+		FlowLayout flowLayout_2 = (FlowLayout) panel_outer.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+		flowLayout_2.setHgap(15);
+		panel_outer.setPreferredSize(new Dimension(categoryWidth,categoryHeight));
 		scrollPane_3 = new JScrollPane(panel_outer);
 		scrollPane_3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-//		scrollPane_3.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
+		scrollPane_3.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
 		panel.add(scrollPane_3);
+		
+		int[] OuterSizeOptionArr = {0,1,2,0,1};
+		int[] OuterColorOptionArr = {0,1,1,0,0};
+		for(i=0;i<5;i++) {
+			final int itemnum=i;
+			System.out.print(itemnum);
+			JPanel outerItem = new JPanel();
+			outerItem.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					ItemDescription dialog = new ItemDescription(JungSinSa_Main.this,data,data.get_ITEM(1,itemnum),OuterSizeOptionArr[itemnum],OuterColorOptionArr[itemnum],1,itemnum);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				}
+			});
+			outerItem.setPreferredSize(new Dimension(itemSlotWidth,itemSlotHeight));
+			panel_outer.add(outerItem);
+			outerItem.setLayout(new BorderLayout(5, 5));
+			
+			JLabel imgouterItem = new JLabel("");
+			imgouterItem.setIcon(iconSetSize(data.get_itemPics(1,itemnum),itemSlotWidth,itemSlotHeight));
+			outerItem.add(imgouterItem, BorderLayout.CENTER);
+			JLabel lblouterItem = new JLabel(data.get_ITEM(1,itemnum).getItemName());
+			lblouterItem.setHorizontalAlignment(SwingConstants.CENTER);
+			outerItem.add(lblouterItem, BorderLayout.SOUTH);
+		
+		}
 		//
 		lbl_Shoes = new JLabel("Shoes");
 		lbl_Shoes.setPreferredSize(new Dimension(this.getWidth(),30));
@@ -451,7 +482,10 @@ public class JungSinSa_Main extends JFrame {
 		panel.add(lbl_Shoes);
 		//category 4
 		panel_shoes = new JPanel();
-		panel_shoes.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
+		FlowLayout flowLayout_3 = (FlowLayout) panel_shoes.getLayout();
+		flowLayout_3.setAlignment(FlowLayout.LEFT);
+		flowLayout_3.setHgap(15);
+		panel_shoes.setPreferredSize(new Dimension(categoryWidth,categoryHeight));
 		scrollPane_4 = new JScrollPane(panel_shoes);
 		scrollPane_4.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 //		scrollPane_4.setPreferredSize(new Dimension(this.getWidth(),categoryHeight));
