@@ -52,7 +52,7 @@ public class MyCart extends JFrame {
 	
 		
 		setTitle("My Cart");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		int frameheight = Math.min(650,650);
 		setBounds(100, 100, 400, frameheight);
 		contentPane = new JPanel();
@@ -120,7 +120,6 @@ public class MyCart extends JFrame {
 					lbl_itemSize.setBounds(122, 74, 60, 40);
 					itembox.add(lbl_itemSize);
 					
-					System.out.print(data.get_sizeOption(data.get_cartlist(i, j)[1]));
 					JLabel lbl_itemColor = new JLabel(data.get_colorOption(data.get_cartlist(i, j)[3]).get(data.get_cartlist(i, j)[4])); 
 					lbl_itemColor.setBounds(182, 74, 60, 40);
 					itembox.add(lbl_itemColor);

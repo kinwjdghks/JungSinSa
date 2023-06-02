@@ -6,10 +6,12 @@ import java.util.List;
 
 public class Database {
 	
-	//structure for item
+	//structure for single item class
 	public class ITEM{
 		private String name;
 		private int price;
+		private int cate;
+		private int idx;
 		
 		public ITEM(String name,int price) {
 			this.name = name;
@@ -23,7 +25,7 @@ public class Database {
 		}
 	};
 	//item data
-	private List<List<ITEM>> ITEMLIST = new ArrayList<>(); //one list of entire items. 
+	private List<List<ITEM>> ITEMLIST = new ArrayList<>(); //single list of entire items. 
 	public ITEM get_ITEM(int cate,int num) {
 		return this.ITEMLIST.get(cate).get(num);
 	}
@@ -45,6 +47,8 @@ public class Database {
 		list_bottom.add(new ITEM("Wide Bending Beige Pants",48000));
 		ITEMLIST.add(list_top);
 		ITEMLIST.add(list_bottom);
+		ITEMLIST.add(list_outer);
+		ITEMLIST.add(list_shoes);
 	}
 	//picture data
 	private List<List<String>> itemPics = new ArrayList<>();
@@ -88,61 +92,87 @@ public class Database {
 	public int get_cartnum() {
 		return cart_num;
 	}
-	private void set_cart() {
-		for(int i=0;i<4;i++) {
-			cart[i] = new int[this.itemAmount[i]][];
-			for(int j=0;j<itemAmount[i];j++) {
-				cart[i][j] = new int[5];
+		private void set_cart() {
+			for(int i=0;i<4;i++) {
+				cart[i] = new int[this.itemAmount[i]][];
+				for(int j=0;j<itemAmount[i];j++) {
+					cart[i][j] = new int[5];
+				}
 			}
+			cart_num = 0;
 		}
-		cart_num = 0;
-	}
-	public void add_cart(int cate,int idx,int sizearr,int sizeidx,int colorarr,int coloridx) {
-		//index 0: whether there exists item 1: sizeOption arraynum 2: sizeOption idx 3: colorOption arraynum 4: colorOption idx
-		this.cart[cate][idx][0] = 1;
-		this.cart[cate][idx][1] = sizearr;
-		this.cart[cate][idx][2] = sizeidx;
-		this.cart[cate][idx][3] = colorarr;
-		this.cart[cate][idx][4] = coloridx;
-		cart_num++;
-	}
-	public void remove_cart(int cate,int idx) {
-		this.cart[cate][idx][0] = 0;
-		cart_num--;
-	}
-	public int is_cart(int cate,int idx) {
-		return this.cart[cate][idx][0];
-	}
+		public void add_cart(int cate,int idx,int sizearr,int sizeidx,int colorarr,int coloridx) {
+			//index 0: whether there exists item 1: sizeOption arraynum 2: sizeOption idx 3: colorOption arraynum 4: colorOption idx
+			this.cart[cate][idx][0] = 1;
+			this.cart[cate][idx][1] = sizearr;
+			this.cart[cate][idx][2] = sizeidx;
+			this.cart[cate][idx][3] = colorarr;
+			this.cart[cate][idx][4] = coloridx;
+			cart_num++;
+		}
+		public int[] get_cartlist(int cate,int idx) {
+			return this.cart[cate][idx];
+		}
+		public void remove_cart(int cate,int idx) {
+			this.cart[cate][idx][0] = 0;
+			cart_num--;
+		}
+		public int is_cart(int cate,int idx) {
+			return this.cart[cate][idx][0];
+		}
 	private int[][][] is_bought = new int[4][][]; //items user has already bought
-	
-	public void set_is_bought() {
-		for(int i=0;i<4;i++) {
-			is_bought[i] = new int[itemAmount[i]][];
-			for(int j=0;j<itemAmount[i];j++) {
-				is_bought[i][j] = new int[5];
+		
+		public void set_is_bought() {
+			for(int i=0;i<4;i++) {
+				is_bought[i] = new int[itemAmount[i]][];
+				for(int j=0;j<itemAmount[i];j++) {
+					is_bought[i][j] = new int[5];
+				}
 			}
 		}
-	}
-	public int[] get_cartlist(int cate,int idx) {
-		return this.cart[cate][idx];
-	}
-	public int[] get_boughtlist(int cate,int idx) {
-		return this.is_bought[cate][idx];
-	}
-	public void purchase_complete() {
-		//renew is_bought array & empty cart
-		for(int i=0;i<4;i++) {
-			for(int j=0;j<get_itemAmount(i);j++) {
-				if(this.cart[i][j][0]==1) {
-					for(int k=0;k<5;k++) {
-						this.is_bought[i][j][k] = this.cart[i][j][k];
-						this.cart[i][j][k] = 0;
+		public int[] get_boughtlist(int cate,int idx) {
+			return this.is_bought[cate][idx];
+		}
+		public void purchase_complete() {
+			//renew is_bought array & empty cart
+			for(int i=0;i<4;i++) {
+				for(int j=0;j<get_itemAmount(i);j++) {
+					if(this.cart[i][j][0]==1) {
+						for(int k=0;k<5;k++) {
+							this.is_bought[i][j][k] = this.cart[i][j][k];
+							this.cart[i][j][k] = 0;
+						}
 					}
 				}
-				
 			}
 		}
-	}
+		
+	private List<List<ArrayList<String>>> itemReview;
+		private void set_itemReview() {
+	        itemReview = new ArrayList<>();
+	
+	        for (int i=0;i<4;i++) { // number of categories
+	            List<ArrayList<String>> category = new ArrayList<>();
+	            for (int j=0;j<itemAmount[i];j++) {
+	                ArrayList<String> review = new ArrayList<>();
+	                category.add(review);
+	            }
+	            itemReview.add(category);
+	        }
+	    }
+		public void write_review(int cate,int idx,String comment) {
+			itemReview.get(cate).get(idx).add(comment);
+			return;
+		}
+		
+//		public void delete_review(int cate,int idx,String comment) {
+//			//will possibly implemented
+//			itemReview.get(cate).get(idx).add(comment);
+//			return;
+//		}
+		
+	
+	
 	public Database() {
 		set_itemPics();
 		set_items();
@@ -150,6 +180,7 @@ public class Database {
 		set_colorOption();
 		set_cart();
 		set_is_bought();
+		set_itemReview();
 	}
 	
 	

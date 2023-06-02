@@ -453,7 +453,6 @@ public class JungSinSa_Main extends JFrame {
 		int[] OuterColorOptionArr = {0,1,1,0,0};
 		for(i=0;i<5;i++) {
 			final int itemnum=i;
-			System.out.print(itemnum);
 			JPanel outerItem = new JPanel();
 			outerItem.addMouseListener(new MouseAdapter() {
 				@Override

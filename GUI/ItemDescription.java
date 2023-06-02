@@ -212,6 +212,7 @@ public class ItemDescription extends JDialog {
 		panel_Review.setBounds(5, 900, 585, 250);
 		mainPanel.add(panel_Review);
 		panel_Review.setLayout(null);
+		/*List all the reviews for the Item.*/
 		
 		lblNewLabel = new JLabel("Reviews");
 		lblNewLabel.setFont(new Font("Heiti TC", Font.BOLD, 19));
